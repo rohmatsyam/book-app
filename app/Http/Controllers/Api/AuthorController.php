@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Models\Book;
+use App\Models\Author;
 
-class BookController extends Controller
+class AuthorController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,12 +16,13 @@ class BookController extends Controller
      */
     public function index()
     {
-        $book = Book::with('author')->get();
+        $author = Author::with('book')->get();
+
         return response()->json([
             'code' => 200,
             'status' => true,
-            'message' => "Success get all book",
-            'data' => $book
+            'message' => "Success get all author",
+            'data' => $author
         ]);
     }
 
@@ -43,17 +44,16 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        $book = Book::create([
-            'author_id' => $request->author_id,
-            'title' => $request->title,
+        $author = Author::create([
+            'name' => $request->name,
             'description' => $request->description
         ]);
 
         return response()->json([
             'code' => 200,
             'status' => true,
-            'message' => "Success create book",
-            'data' => $book
+            'message' => "Success create author",
+            'data' => $author
         ]);
     }
 
@@ -63,13 +63,14 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Book $book)
+    public function show(Author $author)
     {
+        $author = Author::with('book')->find($author->id);
         return response()->json([
             'code' => 200,
             'status' => true,
-            'message' => "Success get book with id = " . $book->id,
-            'data' => $book
+            'message' => "Success get author with id = " . $author->id,
+            'data' => $author
         ]);
     }
 
@@ -91,10 +92,9 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Book $book)
+    public function update(Request $request, Author $author)
     {
-        $book->update([
-            'author_id' => $request->author_id,
+        $author->update([
             'title' => $request->title,
             'description' => $request->description
         ]);
@@ -102,8 +102,8 @@ class BookController extends Controller
         return response()->json([
             'code' => 200,
             'status' => true,
-            'message' => "Success update book with id = " . $book->id,
-            'data' => $book
+            'message' => "Success update author with id = " . $author->id,
+            'data' => $author
         ]);
     }
 
@@ -113,14 +113,14 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Book $book)
+    public function destroy(Author $author)
     {
-        $book->delete();
+        $author->delete();
 
         return response()->json([
             'code' => 200,
             'status' => true,
-            'message' => "Success delete book with id = " . $book->id,
+            'message' => "Success delete author with id = " . $author->id,
             'data' => ""
         ]);
     }

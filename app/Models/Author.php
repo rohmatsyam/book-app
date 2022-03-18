@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Book extends Model
+class Author extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'author_id',
-        'title',
+        'name',
         'description'
     ];
-    public function author()
+    public function book()
     {
         // (Model relasi, id, fk local)
-        return $this->hasOne(Author::class, 'id', 'author_id');
+        // preload
+        return $this->hasMany(Book::class);
     }
 }
