@@ -31,6 +31,7 @@ class AuthController extends Controller
         ]);
 
         $token = $user->createToken($request->email)->plainTextToken;
+        $user->sendEmailVerificationNotification();
 
         return response()->json([
             'code' => 200,
@@ -72,6 +73,43 @@ class AuthController extends Controller
         return response()->json([
             'code' => 200,
             'message' => 'Succes logout from system'
+        ]);
+    }
+
+    public function verify($userId, Request $request)
+    {
+        if ($request->hasValidSignature()) {
+            return response()->json([
+                'code' => 422,
+                'message' => 'Invalid signature'
+            ], 422);
+        }
+
+        $user = User::findOrFail($userId);
+
+        if (!$user->hasVerifiedEmail()) {
+            $user->markEmailAsVerified();
+        }
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Success verified user'
+        ], 200);
+    }
+
+    public function resend(Request $request)
+    {
+        $user = User::find($request->id);
+        if ($user->hasVerifiedEmail()) {
+            return response()->json([
+                'code' => 200,
+                'message' => 'Email already verified'
+            ], 200);
+        }
+        $user->sendEmailVerificationNotification();
+        return response()->json([
+            'code' => 200,
+            'message' => 'Success resend email'
         ]);
     }
 }

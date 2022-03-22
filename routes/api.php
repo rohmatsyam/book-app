@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [\App\Http\Controllers\Api\AuthController::class, 'register']);
 Route::post('/login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
 
+Route::get('email/verify/{id}', [App\Http\Controllers\Api\AuthController::class, 'verify'])->name('verification.verify');
+Route::post('email/resend', [App\Http\Controllers\Api\AuthController::class, 'resend'])->name('verification.resend');
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource("/book", App\Http\Controllers\Api\BookController::class);
     Route::apiResource("/author", App\Http\Controllers\Api\AuthorController::class);
